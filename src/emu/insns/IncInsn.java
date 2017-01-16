@@ -18,7 +18,8 @@ public class IncInsn extends AbstractInsn {
 
     @Override
     public void process(Emulator emulator) {
-        emulator.setCurrentRegister(emulator.getRegister(this.register) + 1);
+        System.out.println("REG: " + this.register);
+        emulator.setRegister(this.register, emulator.getRegister(this.register) + 1);
         emulator.setProgramCounter(this.jumpIndex);
     }
 }

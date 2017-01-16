@@ -24,7 +24,9 @@ public class Emulator {
         this.insnList = new ArrayList<>();
         this.registers = new ArrayList<>(50);
         this.registers.add(10);
-        this.registers.add(10);
+        this.registers.add(4);
+        this.registers.add(0);
+        this.registers.add(0);
     }
 
     public void load(final File file) {
@@ -55,12 +57,8 @@ public class Emulator {
         }
         System.out.println(regTitle);
         while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
-            System.out.println(this.programCounter);
             this.insnList.get(this.programCounter - 1).process(this);
 
-            for (Integer i : this.registers) {
-                System.out.print(i + " ");
-            }
             System.out.println();
             String regVal = "";
             for (Integer i : this.registers) {
@@ -81,10 +79,6 @@ public class Emulator {
 
     public void setRegister(final int index, final int value) {
         this.registers.set(index - 1, value);
-    }
-
-    public void setCurrentRegister(final int value) {
-        this.setRegister(this.programCounter, value);
     }
 
     public void setProgramCounter(int programCounter) {
