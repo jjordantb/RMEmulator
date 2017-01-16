@@ -14,10 +14,10 @@ import java.util.List;
  */
 public class Emulator {
 
-    private final List<Integer> registers;
+    private final List<Integer> registers; // indexed 1 to size - 1
 
-    private final List<AbstractInsn> insnList;
-    private int programCounter = 0;
+    private final List<AbstractInsn> insnList; // indexed 1 to size - 1
+    private int programCounter = 1;
 
 
     public Emulator() {
@@ -49,60 +49,46 @@ public class Emulator {
     }
 
     public void run() {
-//        String regTitle = "";
-//        for (Integer i : this.registers) {
-//            regTitle += ("Register " + i + ", ");
-//        }
-//        System.out.println(regTitle);
-        while (!(this.insnList.get(this.programCounter) instanceof HaltInsn)) {
-            this.insnList.get(this.programCounter).process(this);
+        String regTitle = "";
+        for (Integer i : this.registers) {
+            regTitle += ("Register " + i + ", ");
+        }
+        System.out.println(regTitle);
+        while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
+            System.out.println(this.programCounter);
+            this.insnList.get(this.programCounter - 1).process(this);
 
             for (Integer i : this.registers) {
                 System.out.print(i + " ");
             }
             System.out.println();
-//            String regVal = "";
-//            for (Integer i : this.registers) {
-//                regVal += (i);
-//                for (int j = 0; j < (9 - String.valueOf(i).length()); j++) {
-//                    regVal += " ";
-//                }
-//                regVal += ", ";
-//            }
-//            System.out.println(regVal);
+            String regVal = "";
+            for (Integer i : this.registers) {
+                regVal += (i);
+                for (int j = 0; j < (9 - String.valueOf(i).length()); j++) {
+                    regVal += " ";
+                }
+                regVal += ", ";
+            }
+            System.out.println(regVal);
         }
         System.out.println("Complete!");
     }
 
-    public List<Integer> getRegisters() {
-        return registers;
-    }
-
     public int getRegister(final int index) {
-        return this.registers.get(index);
+        return this.registers.get(index - 1);
     }
 
     public void setRegister(final int index, final int value) {
-        this.registers.set(index, value);
-    }
-
-    public int getCurrentRegister() {
-        return this.getRegister(this.programCounter);
+        this.registers.set(index - 1, value);
     }
 
     public void setCurrentRegister(final int value) {
         this.setRegister(this.programCounter, value);
     }
 
-    public int getProgramCounter() {
-        return programCounter;
-    }
-
     public void setProgramCounter(int programCounter) {
-        this.programCounter = programCounter - 1;
+        this.programCounter = programCounter;
     }
 
-    public void incrementProgramCounter() {
-        this.programCounter++;
-    }
 }
