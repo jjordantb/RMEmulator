@@ -18,7 +18,7 @@ public class DebInsn extends AbstractInsn {
     }
 
     @Override
-    public void process(Emulator emulator) {
+    public void process(Emulator emulator) { // registers 0 to size - 1, register is 1 to size
         final int curVal;
         if ((curVal = emulator.getRegister(this.register)) > 0) {
             emulator.setRegister(this.register, curVal - 1);

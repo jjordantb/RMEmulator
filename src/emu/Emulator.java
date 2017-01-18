@@ -22,7 +22,7 @@ public class Emulator {
 
     public Emulator() {
         this.insnList = new ArrayList<>();
-        this.registers = new ArrayList<>(50);
+        this.registers = new ArrayList<>();
         this.registers.add(10);
         this.registers.add(4);
         this.registers.add(0);
@@ -33,16 +33,23 @@ public class Emulator {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                final String[] values = line.contains(" ") ? line.split(" ") : new String[]{line};
-                if (values[0].equals(IncInsn.ID)) {
-                    insnList.add(new IncInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2])));
-                } else if (values[0].equals(DebInsn.ID)) {
-                    insnList.add(new DebInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2]), Integer.valueOf(values[3])));
-                } else if (values[0].equals(HaltInsn.ID)) {
-                    insnList.add(new HaltInsn());
+                if (line.contains(IncInsn.ID) || line.contains(DebInsn.ID) || line.contains(HaltInsn.ID)) {
+                    if (line.contains("//")) {
+                        line = line.substring(line.indexOf("//"), line.length());
+                    }
+                    final String[] values = line.contains(" ") ? line.split(" ") : new String[]{line};
+                    if (values[0].equals(IncInsn.ID)) {
+                        insnList.add(new IncInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2])));
+                    } else if (values[0].equals(DebInsn.ID)) {
+                        insnList.add(new DebInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2]), Integer.valueOf(values[3])));
+                    } else if (values[0].equals(HaltInsn.ID)) {
+                        insnList.add(new HaltInsn());
+                    } else {
+                        System.out.println("Invalid instruction: " + values[0]);
+                        System.exit(1);
+                    }
                 } else {
-                    System.out.println("Invalid instruction: " + values[0]);
-                    System.exit(1);
+                    this.insnList.add(null);
                 }
             }
         } catch (IOException e) {
@@ -57,7 +64,13 @@ public class Emulator {
         }
         System.out.println(regTitle);
         while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
-            this.insnList.get(this.programCounter - 1).process(this);
+            final AbstractInsn insn;
+            if ((insn = this.insnList.get(this.programCounter - 1)) != null) {
+                insn.process(this);
+            } else {
+                this.programCounter++;
+                continue;
+            }
 
             System.out.println();
             String regVal = "";
@@ -85,4 +98,7 @@ public class Emulator {
         this.programCounter = programCounter;
     }
 
+    public List<Integer> getRegisters() {
+        return registers;
+    }
 }
