@@ -12,7 +12,11 @@ public class Application {
             System.exit(1);
         }
         final File file = new File(args[0]);
-        final Emulator emulator = new Emulator();
+        int[] ints = new int[args.length - 1];
+        for (int i = 1; i < args.length; i++) {
+            ints[i - 1] = Integer.valueOf(args[i]);
+        }
+        final Emulator emulator = new Emulator(ints);
         emulator.load(file);
         emulator.run();
     }

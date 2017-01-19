@@ -20,13 +20,12 @@ public class Emulator {
     private int programCounter = 1;
 
 
-    public Emulator() {
+    public Emulator(final int... ints) {
         this.insnList = new ArrayList<>();
         this.registers = new ArrayList<>();
-        this.registers.add(0);
-        this.registers.add(100);
-        this.registers.add(0);
-        this.registers.add(0);
+        for (Integer i : ints) {
+            this.registers.add(i);
+        }
     }
 
     public void load(final File file) {
@@ -38,7 +37,6 @@ public class Emulator {
                         line = line.substring(0, line.indexOf("//") - 1);
                     }
                     final String[] values = line.contains(" ") ? line.split(" ") : new String[]{line};
-                    //values[1] = values[1].replace("$", "");
                     if (values[0].equals(IncInsn.ID)) {
                         insnList.add(new IncInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2])));
                     } else if (values[0].equals(DebInsn.ID)) {
@@ -60,33 +58,31 @@ public class Emulator {
 
     public void run() {
         String regTitle = "";
-        for (Integer i : this.registers) {
+        for (int i = 1; i <= this.registers.size(); i++) {
             regTitle += ("Register " + i + ", ");
         }
+        regTitle = regTitle.substring(0, regTitle.length() - 2);
         System.out.println(regTitle);
-        try {
-            while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
-                final AbstractInsn insn;
-                if ((insn = this.insnList.get(this.programCounter - 1)) != null) {
-                    insn.process(this);
-                } else {
-                    this.programCounter++;
-                    continue;
-                }
-
-                System.out.println();
-                String regVal = "";
-                for (Integer i : this.registers) {
-                    regVal += (i);
-                    for (int j = 0; j < (9 - String.valueOf(i).length()); j++) {
-                        regVal += " ";
-                    }
-                    regVal += ", ";
-                }
-                System.out.println(regVal);
+        while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
+            final AbstractInsn insn;
+            if ((insn = this.insnList.get(this.programCounter - 1)) != null) {
+                insn.process(this);
+            } else {
+                this.programCounter++;
+                continue;
             }
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("ERROR: Missing HALT");
+
+            System.out.println();
+            String regVal = "";
+            for (Integer i : this.registers) {
+                regVal += (i);
+                for (int j = 0; j < (10 - String.valueOf(i).length()); j++) {
+                    regVal += " ";
+                }
+                regVal += ", ";
+            }
+            regVal = regVal.substring(0, regVal.length() - 2);
+            System.out.println(regVal);
         }
         System.out.println("Complete!");
     }
