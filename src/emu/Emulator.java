@@ -99,7 +99,4 @@ public class Emulator {
         this.programCounter = programCounter;
     }
 
-    public List<Integer> getRegisters() {
-        return registers;
-    }
 }
