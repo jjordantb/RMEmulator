@@ -1,9 +1,17 @@
-
-fof
-fijf
-fihosf
-
-foihsfoih
-
-
-sfiojfios
+DEB 2 2 3
+INC 1 1
+DEB 1 4 5
+INC 2 3
+DEB 2 6 8
+DEB 2 7 9
+INC 1 5
+INC 2 9
+INC 2 10
+DEB 2 11 11 // deb once no matter what
+DEB 2 13 12
+INC 3 13
+DEB 1 14 15
+INC 2 13
+DEB 2 16 17
+INC 2 1
+HALT

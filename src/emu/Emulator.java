@@ -23,8 +23,8 @@ public class Emulator {
     public Emulator() {
         this.insnList = new ArrayList<>();
         this.registers = new ArrayList<>();
-        this.registers.add(10);
-        this.registers.add(4);
+        this.registers.add(0);
+        this.registers.add(100);
         this.registers.add(0);
         this.registers.add(0);
     }
@@ -35,9 +35,10 @@ public class Emulator {
             while ((line = br.readLine()) != null) {
                 if (line.contains(IncInsn.ID) || line.contains(DebInsn.ID) || line.contains(HaltInsn.ID)) {
                     if (line.contains("//")) {
-                        line = line.substring(line.indexOf("//"), line.length());
+                        line = line.substring(0, line.indexOf("//") - 1);
                     }
                     final String[] values = line.contains(" ") ? line.split(" ") : new String[]{line};
+                    //values[1] = values[1].replace("$", "");
                     if (values[0].equals(IncInsn.ID)) {
                         insnList.add(new IncInsn(Integer.valueOf(values[1]), Integer.valueOf(values[2])));
                     } else if (values[0].equals(DebInsn.ID)) {
@@ -63,25 +64,29 @@ public class Emulator {
             regTitle += ("Register " + i + ", ");
         }
         System.out.println(regTitle);
-        while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
-            final AbstractInsn insn;
-            if ((insn = this.insnList.get(this.programCounter - 1)) != null) {
-                insn.process(this);
-            } else {
-                this.programCounter++;
-                continue;
-            }
-
-            System.out.println();
-            String regVal = "";
-            for (Integer i : this.registers) {
-                regVal += (i);
-                for (int j = 0; j < (9 - String.valueOf(i).length()); j++) {
-                    regVal += " ";
+        try {
+            while (!(this.insnList.get(this.programCounter - 1) instanceof HaltInsn)) {
+                final AbstractInsn insn;
+                if ((insn = this.insnList.get(this.programCounter - 1)) != null) {
+                    insn.process(this);
+                } else {
+                    this.programCounter++;
+                    continue;
                 }
-                regVal += ", ";
+
+                System.out.println();
+                String regVal = "";
+                for (Integer i : this.registers) {
+                    regVal += (i);
+                    for (int j = 0; j < (9 - String.valueOf(i).length()); j++) {
+                        regVal += " ";
+                    }
+                    regVal += ", ";
+                }
+                System.out.println(regVal);
             }
-            System.out.println(regVal);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("ERROR: Missing HALT");
         }
         System.out.println("Complete!");
     }
